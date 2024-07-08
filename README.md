@@ -30,7 +30,8 @@
 
 ## Getting Started
 ### Clone the repository:
- - git clone <repository-url>
+ - git clone <https://github.com/geetaanjalishah/Telegram-clone
+ >
 - cd telegram-clone
 
 
