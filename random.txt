@@ -1,0 +1,310 @@
+https://static.statusqueen.com/dpimages/thumbnail/dp%20image70-689.jpg
+
+import React, { Component } from 'react';
+import { fetchChats, fetchMessages } from './components/screens/Home';
+import Navbar from './components/Navbar';
+import HomeScreen from './components/screens/HomeScreen';
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      chats: [],
+      messages: [],
+      selectedChatId: null,
+      isChatsLoaded: false,
+      isMessagesLoaded: false,
+      error: null,
+    };
+  }
+
+  componentDidMount() {
+    this.loadChats();
+  }
+
+  loadChats() {
+    fetchChats()
+      .then(chats => {
+        this.setState({
+          isChatsLoaded: true,
+          chats,
+        });
+      })
+      .catch(error => {
+        console.error("Error fetching chats:", error);
+        this.setState({
+          isChatsLoaded: true,
+          error,
+        });
+      });
+  }
+
+  loadMessages(chatId) {
+    fetchMessages(chatId)
+      .then(messages => {
+        this.setState({
+          selectedChatId: chatId,
+          messages,
+          isMessagesLoaded: true,
+        });
+      })
+      .catch(error => {
+        console.error(`Error fetching messages for chat ${chatId}:`, error);
+        this.setState({
+          isMessagesLoaded: true,
+          error,
+        });
+      });
+  }
+
+  handleChatClick(chatId) {
+    this.setState({
+      messages: [],
+      isMessagesLoaded: false,
+      selectedChatId: chatId,
+    });
+    this.loadMessages(chatId);
+  }
+
+  render() {
+    const { chats, messages, isChatsLoaded, isMessagesLoaded, error, selectedChatId } = this.state;
+
+    if (error) {
+      return <div>Error: {error.message}</div>;
+    } else if (!isChatsLoaded) {
+      return <div>Loading chats...</div>;
+    } else {
+      return (
+        <div className="App">
+          <Navbar />
+          <HomeScreen />
+          <div className="chats">
+            <h2>Chats</h2>
+            <ul>
+              {chats.map(chat => (
+                <li key={chat.id} onClick={() => this.handleChatClick(chat.id)}>
+                  {chat.id}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="messages">
+            <h2>Messages</h2>
+            {!isMessagesLoaded && selectedChatId && <div>Loading messages...</div>}
+            {isMessagesLoaded && selectedChatId && (
+              <ul>
+                {messages.map(message => (
+                  <li key={message.id}>
+                    <strong>{message.senderName}: </strong>{message.content}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      );
+    }
+  }
+}
+
+export default App;
+
+
+
+
+          <div className="chats">
+            <h2>Chats</h2>
+            <ul>
+              {chats.map(chat => (
+                <li key={chat.id} onClick={() => this.handleChatClick(chat.id)}>
+                  {chat.id}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="messages">
+            <h2>Messages</h2>
+            {!isMessagesLoaded && selectedChatId && <div>Loading messages...</div>}
+            {isMessagesLoaded && selectedChatId && (
+              <ul>
+                {messages.map(message => (
+                  <li key={message.id}>
+                    <strong>{message.senderName}: </strong>{message.content}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+
+
+
+          import React, { Component } from "react";
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom"; // Import BrowserRouter and Routes
+import { fetchChats, fetchMessages } from "./components/screens/Home";
+import Navbar from "./components/Navbar";
+import HomeScreen from "./components/screens/HomeScreen";
+import ChatMessages from "./components/screens/ChatMessages";
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      chats: [],
+      messages: [],
+      selectedChatId: null,
+      isChatsLoaded: false,
+      isMessagesLoaded: false,
+      error: null,
+    };
+  }
+
+  componentDidMount() {
+    this.loadChats();
+  }
+
+  loadChats() {
+    fetchChats()
+      .then((chats) => {
+        this.setState({
+          isChatsLoaded: true,
+          chats,
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching chats:", error);
+        this.setState({
+          isChatsLoaded: true,
+          error,
+        });
+      });
+  }
+
+  loadMessages(chatId) {
+    fetchMessages(chatId)
+      .then((messages) => {
+        this.setState({
+          selectedChatId: chatId,
+          messages,
+          isMessagesLoaded: true,
+        });
+      })
+      .catch((error) => {
+        console.error(`Error fetching messages for chat ${chatId}:`, error);
+        this.setState({
+          isMessagesLoaded: true,
+          error,
+        });
+      });
+  }
+
+  handleChatClick(chatId) {
+    this.setState({
+      messages: [],
+      isMessagesLoaded: false,
+      selectedChatId: chatId,
+    });
+    this.loadMessages(chatId);
+  }
+
+  render() {
+    const {
+      chats,
+      messages,
+      isChatsLoaded,
+      isMessagesLoaded,
+      error,
+      selectedChatId,
+    } = this.state;
+
+    if (error) {
+      return <div>Error: {error.message}</div>;
+    } else if (!isChatsLoaded) {
+      return <div>Loading chats...</div>;
+    } else {
+      return (
+        <Router> {/* Wrap everything inside Router */}
+          <div className="App">
+            <Navbar />
+            <HomeScreen />
+            <div className="chats">
+              <h2>Chats</h2>
+              <ul>
+                {chats.map((chat) => (
+                  <li
+                    key={chat.id}
+                    onClick={() => this.handleChatClick(chat.id)}
+                  >
+                    {/* Use Link instead of a directly to manage routing */}
+                    <Link to={`/chat/${chat.id}`}>{chat.id}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <Routes> {/* Use Routes inside Router */}
+              <Route
+                path="/chat/:chatId"
+                element={ // Use element prop instead of render for Route
+                  <ChatMessages
+                    messages={messages}
+                    isMessagesLoaded={isMessagesLoaded}
+                    selectedChatId={selectedChatId}
+                  />
+                }
+              />
+            </Routes>
+          </div>
+        </Router>
+      );
+    }
+  }
+}
+
+export default App;
+
+
+import React, { useState, useEffect } from "react";
+import { fetchChats } from "./Home"; // Assuming fetchChats is correctly imported
+import '../../App.css';
+
+const DEFAULT_IMAGE_URL = "https://static.statusqueen.com/dpimages/thumbnail/dp%20image70-689.jpg";
+
+const HomeScreen = ({ onChatClick }) => {
+  const [users, setUsers] = useState([]);
+
+  const getUser = async () => {
+    try {
+      const allChats = await fetchChats();
+      console.log(allChats); // Verify the structure of allChats
+      setUsers(allChats);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      // Handle error state or display a message to the user
+    }
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  const RenderCard = ({ item, onClick }) => (
+    <div className="mycard" onClick={() => onClick(item.id)}>
+      <img src={item.image_url || DEFAULT_IMAGE_URL} alt="user avatar" className="img" />
+      <div>
+        <p className="text">{item.name}</p>
+        <p className="text">{item.email}</p>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="flatlist">
+      {users.map((user) => (
+        <RenderCard key={user.id} item={user} onClick={onChatClick} />
+      ))}
+    </div>
+  );
+};
+
+export default HomeScreen;
