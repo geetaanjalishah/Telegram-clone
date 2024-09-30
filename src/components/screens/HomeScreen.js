@@ -9,7 +9,7 @@ const HomeScreen = ({ onChatClick }) => {
 
   const getUser = async () => {
     try {
-      const allChats = await fetchChats();
+      const allChats = await fetchChats(); // Will use static data now
       console.log(allChats); 
       setUsers(allChats);
     } catch (error) {
@@ -27,13 +27,7 @@ const HomeScreen = ({ onChatClick }) => {
       <div>
         <p className="text">{item.name}</p>
         <p className="text">{item.email}</p>
-        {item.creator && (
-          <div>
-            <p className="text-name">{item.creator.name}</p>
-            <p className="text">{item.creator.email}</p>
-            <p className="text">{item.creator.image_url}</p>
-          </div>
-        )}
+        
       </div>
     </div>
   );

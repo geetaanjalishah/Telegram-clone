@@ -1,28 +1,25 @@
+import chats from './data/Chat.json'; 
+import messages from './data/Message.json'; 
+
 export const fetchChats = () => {
-    return fetch('https://devapi.beyondchats.com/api/get_all_chats?page=1')
-      .then(res => res.json())
-      .then(result => {
-        if (result && result.data && result.data.data) {
-          return result.data.data;
-        } else {
-          throw new Error("No chats found in the response");
-        }
-      });
-  };
-  
-  export const fetchMessages = (chatId) => {
-    return fetch(`https://devapi.beyondchats.com/api/get_chat_messages?chat_id=${chatId}`)
-      .then(res => res.json())
-      .then(json => {
-        if (json && json.data) {
-          return json.data;
-        } else {
-          throw new Error(`No messages found for chat ${chatId}`);
-        }
-      });
-  };
-  
-  export const Home = () => {
-  };
-  export default Home
-  
+  return new Promise((resolve) => {
+    resolve(chats); 
+  });
+};
+
+export const fetchMessages = (chatId) => {
+  return new Promise((resolve, reject) => {
+    const chatMessages = messages[chatId];
+    if (chatMessages) {
+      resolve(chatMessages); 
+    } else {
+      reject(new Error(`No messages found for chat ${chatId}`));
+    }
+  });
+};
+
+export const Home = () => {
+  return null;
+};
+
+export default Home;
